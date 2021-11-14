@@ -44,6 +44,7 @@ fun main() {
         install(CORS) {
             method(HttpMethod.Get)
             method(HttpMethod.Post)
+            method(HttpMethod.Patch)
             method(HttpMethod.Delete)
             anyHost()
         }
