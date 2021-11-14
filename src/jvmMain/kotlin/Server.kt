@@ -13,6 +13,8 @@ import org.litote.kmongo.coroutine.*
 import org.litote.kmongo.reactivestreams.KMongo
 import com.mongodb.ConnectionString
 import java.io.File
+import java.math.BigInteger
+import java.security.MessageDigest
 import java.util.ArrayList
 
 
@@ -35,6 +37,8 @@ fun getFilesCount(file: String): MutableList<String> {
     return results
 }
 
+
+
 fun main() {
 
     embeddedServer(Netty, 9090) {
@@ -52,7 +56,38 @@ fun main() {
             gzip()
         }
         routing {
-            get("/hello") {
+            val carList = mutableListOf(
+                Car("Nissan", "Skyline R33 GTST", "Blue", "160AP4", "My Car"),
+                Car("Subaru", "Wrx", "Black", "680TER", "My other car"),
+                Car("Nissan", "Silvia s15", "Red", "Test123","My wanted car")
+            )
+
+            route(Car.path) {
+                get {
+                    call.respond(carList)
+                }
+                post {
+                    carList += call.receive<Car>()
+                    call.respond(HttpStatusCode.OK)
+                }
+                delete("/{numberPlate}") {
+                    val id = call.parameters["id"]?.toInt() ?: error("Invalid delete request")
+                    carList.removeIf { it.plateHash == Car.make }
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+
+
+
+        }
+    }.start(wait = true)
+}
+
+
+
+/*
+Old Get
+get("/hello") {
 
                 val fileList: MutableList<String> = getFilesCount("/home/caleb/data/www/CarsAndCoffee/images")
 
@@ -68,6 +103,5 @@ fun main() {
 
 
             }
-        }
-    }.start(wait = true)
-}
+
+ */
