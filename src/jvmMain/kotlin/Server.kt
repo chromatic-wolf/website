@@ -10,15 +10,8 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import org.litote.kmongo.*
 import org.litote.kmongo.coroutine.*
-import org.litote.kmongo.reactivestreams.KMongo
-import com.mongodb.ConnectionString
 import java.io.File
-import java.math.BigInteger
-import java.security.MessageDigest
 import java.util.ArrayList
-
-
-
 
 
 fun getFilesCount(file: String): MutableList<String> {
@@ -57,22 +50,23 @@ fun main() {
         }
         routing {
             val carList = mutableListOf(
-                Car("Nissan", "Skyline R33 GTST", "Blue", "160AP4", "My Car"),
-                Car("Subaru", "Wrx", "Black", "680TER", "My other car"),
-                Car("Nissan", "Silvia s15", "Red", "Test123","My wanted car")
+                CarData("Nissan", "Skyline R33 GTST", "Blue", "160AP4", "My Car"),
+                CarData("Subaru", "Wrx", "Black", "680TER", "My other car"),
+                CarData("Nissan", "Silvia s15", "Red", "Test123","My wanted car")
             )
 
-            route(Car.path) {
+            route(CarData.path) {
                 get {
                     call.respond(carList)
                 }
                 post {
-                    carList += call.receive<Car>()
+                    carList += call.receive<CarData>()
                     call.respond(HttpStatusCode.OK)
                 }
-                delete("/{numberPlate}") {
-                    val id = call.parameters["id"]?.toInt() ?: error("Invalid delete request")
-                    carList.removeIf { it.plateHash == Car.make }
+                delete("/{ID}") {
+                    val id = call.parameters["ID"]?.toString() ?: error("Invalid delete request")
+
+                    carList.removeIf { it.uniqueID == id }
                     call.respond(HttpStatusCode.OK)
                 }
             }
