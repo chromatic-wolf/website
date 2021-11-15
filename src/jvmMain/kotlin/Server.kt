@@ -55,6 +55,16 @@ fun main() {
                 CarData("Nissan", "Silvia s15", "Red", "Test123","My wanted car")
             )
 
+            get("/") {
+                call.respondText(
+                    this::class.java.classLoader.getResource("index.html")!!.readText(),
+                    ContentType.Text.Html
+                )
+            }
+            static("/") {
+                resources("")
+            }
+
             route(CarData.path) {
                 get {
                     call.respond(carList)
