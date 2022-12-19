@@ -49,11 +49,7 @@ fun main() {
             gzip()
         }
         routing {
-            val carList = mutableListOf(
-                CarData("Nissan", "Skyline R33 GTST", "Blue", "160AP4", "My Car"),
-                CarData("Subaru", "Wrx", "Black", "680TER", "My other car"),
-                CarData("Nissan", "Silvia s15", "Red", "Test123","My wanted car")
-            )
+
 
             get("/") {
                 call.respondText(
